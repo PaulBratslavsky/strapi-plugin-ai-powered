@@ -54,7 +54,8 @@ export default {
 
             return component;
           },
-          permissions: pluginPermissions.settings,
+          // TODO: UNDERSTAND ALL THESE OPTIONS AND HOW IT RELATES TO PERMISSIONS
+          permissions: undefined,
         },
       ]
     );

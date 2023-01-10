@@ -19,7 +19,7 @@ import OpenAiHeader from "../../components/OpenAiHeader";
 
 const ProtectedSettingsPage = () => {
   console.log(pluginPermissions.settingsUpdate, "################# pluginPermissions ##################")
-  return <CheckPagePermissions permissions={[{ action: `plugin::ai-powered.settings.update`, subject: null }]}>
+  return <CheckPagePermissions permissions={undefined}>
     <SettingsPage />
   </CheckPagePermissions>
 };
@@ -67,7 +67,6 @@ const SettingsForm = () => {
               />
             </GridItem>
             <GridItem key="submit" col={12}>
-              {apiKey}
               <Button type="submit">Save API Key</Button>
             </GridItem>
           </Grid>
