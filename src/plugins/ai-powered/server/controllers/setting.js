@@ -1,10 +1,10 @@
 'use strict';
 
 module.exports = ({ strapi }) => ({
-  index(ctx) {
+  update(ctx) {
     ctx.body = strapi
       .plugin('ai-powered')
-      .service('myService')
-      .getWelcomeMessage();
+      .service('setting')
+      .update();
   },
 });

@@ -1,0 +1,18 @@
+{
+  "kind": "singleType",
+  "collectionName": "setting",
+  "info": {
+    "singularName": "setting",
+    "pluralName": "settings",
+    "displayName": "Settings"
+  },
+  "options": {
+    "draftAndPublish": false,
+    "comment": ""
+  },
+  "attributes": {
+    "apiKey": {
+      "type": "string"
+    }
+  }
+}

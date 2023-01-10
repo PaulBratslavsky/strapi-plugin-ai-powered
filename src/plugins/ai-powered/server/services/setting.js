@@ -1,7 +1,7 @@
 'use strict';
 
 module.exports = ({ strapi }) => ({
-  getWelcomeMessage() {
+  update() {
     return 'Welcome to Strapi 🚀';
   },
 });

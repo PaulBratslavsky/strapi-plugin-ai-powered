@@ -1,9 +1,9 @@
 'use strict';
 
-const myService = require('./my-service');
+const setting = require('./setting');
 const openAi= require('./open-ai');
 
 module.exports = {
-  myService,
+  setting,
   openAi,
 };

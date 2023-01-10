@@ -1,4 +1,5 @@
 import React from "react";
+
 import {
   Box,
   TextInput,
@@ -40,7 +41,7 @@ export default function CreatePage(action = () => null) {
         <form onSubmit={onSubmit}>
           <Stack spacing={4}>
             <Grid gap={5}>
-              <GridItem key="name" col={12}>
+              <GridItem key="title" col={12}>
                 <TextInput
                   placeholder="Enter note title"
                   label="Title"
@@ -52,7 +53,7 @@ export default function CreatePage(action = () => null) {
                   value={formData.title}
                 />
               </GridItem>
-              <GridItem key="name" col={12}>
+              <GridItem key="content" col={12}>
                 <Textarea
                   placeholder="Insert your content to summarize"
                   label="Content"
@@ -62,7 +63,7 @@ export default function CreatePage(action = () => null) {
                   {formData.content}
                 </Textarea>
               </GridItem>
-              <GridItem key="name" col={12}>
+              <GridItem key="submit" col={12}>
                 <Button type="submit">Summarize</Button>
               </GridItem>
             </Grid>

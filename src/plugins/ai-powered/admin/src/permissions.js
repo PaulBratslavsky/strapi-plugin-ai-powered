@@ -23,4 +23,6 @@ const pluginPermissions = {
   mainDelete
 };
 
+console.log("plugin                    Permissions", pluginPermissions)
+
 export default pluginPermissions;
