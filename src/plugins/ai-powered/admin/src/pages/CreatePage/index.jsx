@@ -24,7 +24,6 @@ export default function CreatePage(action = () => null) {
   async function onSubmit(e) {
     e.preventDefault();
     action(formData);
-    alert("Form Submitted!");
   }
 
   return (

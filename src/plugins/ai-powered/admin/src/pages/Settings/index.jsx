@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import api from '../../api/open-ai';
+import api from "../../api/open-ai";
 import { CheckPagePermissions } from "@strapi/helper-plugin";
 import {
   ContentLayout,
@@ -15,31 +15,28 @@ import {
 import pluginPermissions from "./../../permissions";
 import OpenAiHeader from "../../components/OpenAiHeader";
 
-//pluginPermissions.settingsUpdate
-
 const ProtectedSettingsPage = () => {
-  console.log(pluginPermissions.settingsUpdate, "################# pluginPermissions ##################")
-  return <CheckPagePermissions permissions={undefined}>
-    <SettingsPage />
-  </CheckPagePermissions>
+  return (
+    <CheckPagePermissions permissions={pluginPermissions.settingsUpdate}>
+      <SettingsPage />
+    </CheckPagePermissions>
+  );
 };
 
 const SettingsForm = () => {
   const [apiKey, setApiKey] = useState("");
   const [isLoading, setIsLoading] = useState(false);
 
-  const fetchData = async () => {
+  const updateData = async () => {
     if (isLoading === false) setIsLoading(true);
-    const setting = await api.updateSettings(apiKey);
-    console.log(setting, "################# setting ##################");
+    await api.testRequest({ apiKey: apiKey });
     setIsLoading(false);
-  }
+  };
 
   async function onSubmit(e) {
     e.preventDefault();
     setIsLoading(true);
-    await fetchData();
-    alert("Form Submitted!");
+    await updateData();
   }
 
   return (
@@ -67,7 +64,9 @@ const SettingsForm = () => {
               />
             </GridItem>
             <GridItem key="submit" col={12}>
-              <Button type="submit">Save API Key</Button>
+              <Button type="submit" disabled={isLoading}>
+                {isLoading ? "Saving Your Key" : "Save Your Key"}
+              </Button>
             </GridItem>
           </Grid>
         </Stack>
@@ -77,13 +76,8 @@ const SettingsForm = () => {
 };
 
 const SettingsPage = () => {
-  const [isLoading, setIsLoading] = useState(false);
-  const [isSubmitting, setIsSubmitting] = useState(false);
-
-  if (isLoading) return <h1>loading state here</h1>;
-
   return (
-    <Main labelledBy="title" aria-busy={isSubmitting}>
+    <Main labelledBy="title">
       <OpenAiHeader />
       <ContentLayout>
         <SettingsForm />
