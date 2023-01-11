@@ -17,7 +17,7 @@ export default {
       icon: PluginIcon,
       intlLabel: {
         id: `${pluginId}.plugin.name`,
-        defaultMessage: name,
+        defaultMessage: "AI Powered",
       },
       Component: async () => {
         const component = await import(/* webpackChunkName: "[request]" */ './pages/App');
@@ -37,7 +37,6 @@ export default {
         id: pluginId,
         intlLabel: { id: getTrad('SettingsNav.section-label'), defaultMessage: 'Open AI' },
       },
-      // TODO: UNDERSTAND ALL THESE OPTIONS
       [
         {
           intlLabel: {
@@ -54,7 +53,7 @@ export default {
 
             return component;
           },
-          permissions: pluginPermissions.settings,
+          permissions: pluginPermissions.settingsUpdate,
         },
       ]
     );

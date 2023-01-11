@@ -1,19 +1,10 @@
 import { request } from "@strapi/helper-plugin";
 
 const api = {
-  getPromt: async () => {
-    return await request("/open-ai/get-promt", {
-      method: "GET",
-    });
-  },
-  updateSettings: async (apiKey) => {
-    return await request("/setting/update-setting", {
+  testRequest: async (data) => {
+    return await request("/ai-powered/update-settings", {
       method: "PUT",
-      body: {
-        data: {
-          apiKey: apiKey
-        }
-      },
+      body: { data: data },
     });
   },
 };

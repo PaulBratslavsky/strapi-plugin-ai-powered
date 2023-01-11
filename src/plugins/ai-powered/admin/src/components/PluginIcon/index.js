@@ -5,8 +5,8 @@
  */
 
 import React from 'react';
-import Puzzle from '@strapi/icons/Puzzle';
+import ManyToMany from '@strapi/icons/ManyToMany';
 
-const PluginIcon = () => <Puzzle />;
+const PluginIcon = () => <ManyToMany />;
 
 export default PluginIcon;
