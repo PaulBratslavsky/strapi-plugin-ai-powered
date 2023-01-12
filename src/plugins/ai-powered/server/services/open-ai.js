@@ -9,18 +9,26 @@ async function fetchData(apiKey, configuration = {}) {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          'Authorization': `Bearer ${apiKey}`,
+          'Authorization': 'Bearer ' + apiKey,
         },
         data: {
+          "model": "text-davinci-003",
           "prompt": "This is a test",
-          "max_tokens": 5,
+          "max_tokens": 64,
           "temperature": 0.9
         }
       }
     )
     return await response.data;
   } catch (err) {
-    throw new ApplicationError(err.response.data.error.message);
+    console.log(err.response.data.error, "err")
+    if (err.response.data.error.code === "invalid_api_key") {
+      throw new ApplicationError("Please provide a valid API key.");
+    } else if (err.response.data.error.code === null) {
+      throw new ApplicationError(err.response.data.error.message);
+    } else {
+      throw new ApplicationError(err, "Internal server error.");
+    }
   }
 
 }
@@ -48,14 +56,10 @@ module.exports = ({ strapi }) => ({
     // }
 
     // handle error with catch
-    try {
-      return await fetchData(apiSettings.apiKey, {});
-    } catch (err) {
-      console.log(err);
-      throw new ApplicationError("err.response.data.error.message");
-    }
+    return await fetchData(apiSettings.apiKey, {});
 
   },
+
   async updateSettings(payload) {
     const settings = await strapi.entityService.findMany("plugin::ai-powered.setting");
     if (!settings) {
@@ -64,10 +68,16 @@ module.exports = ({ strapi }) => ({
       return await strapi.entityService.update("plugin::ai-powered.setting", settings.id, payload);
     }
   },
-  async sendPrompt(payload) {
 
-  },
   async getSettings() {
     return await strapi.entityService.findMany("plugin::ai-powered.setting");
   },
+
+  async createNote(payload) {
+    return await strapi.entityService.create("plugin::ai-powered.note", payload);
+  },
+  
+  async getNotes() {
+    return await strapi.entityService.findMany("plugin::ai-powered.note");
+  }
 });

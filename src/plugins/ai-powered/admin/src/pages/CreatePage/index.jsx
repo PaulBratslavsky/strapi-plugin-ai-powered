@@ -2,7 +2,6 @@ import React, { useState } from "react";
 import { useIntl } from "react-intl";
 
 import api from "../../api/open-ai";
-import getTrad from "../../utils/getTrad";
 
 import {
   Box,
@@ -18,7 +17,6 @@ import { useNotification } from "@strapi/helper-plugin";
 
 export default function CreatePage() {
   const toggleNotification = useNotification();
-  const { formatMessage } = useIntl();
 
   const [isLoading, setIsLoading] = useState(false);
   const [formData, setFormData] = React.useState({
@@ -35,16 +33,12 @@ export default function CreatePage() {
     e.preventDefault();
     setIsLoading(true);
     try {
-      return await api.openAiRequest(formData);
-      // TODO: Question aout error handling front and back
-    } catch (err) {
+      const res = await api.openAiRequest(formData);
+      return res;
+    } catch (error) {
       toggleNotification({
         type: "warning",
-        message: formatMessage({
-          // TODO: Question aout the trad
-          id: getTrad("Settings.ai-powered.plugin.notification.api.error"),
-          defaultMessage: "Please check that you providede the correct API key",
-        }),
+        message: error.response.data.error.message,
       });
     }
 
@@ -97,3 +91,6 @@ export default function CreatePage() {
     </Box>
   );
 }
+
+// Code reference for error handling notification
+// https://github.com/strapi/strapi/blob/f514da73e4c4f3ebe648c61bd3b376fcf09820fa/packages/core/admin/admin/src/content-manager/pages/App/useModels.js#L68-L76

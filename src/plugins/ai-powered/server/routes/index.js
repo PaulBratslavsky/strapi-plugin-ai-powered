@@ -11,9 +11,31 @@ module.exports = [
     },
   },
   {
+    method: 'GET',
+    path: '/get-settings',
+    handler: 'openAi.getSettings',
+    config: {
+      policies: [
+        'admin::isAuthenticatedAdmin',
+        { name: 'admin::hasPermissions', config: { actions: ['plugin::ai-powered.read'] } },
+      ]
+    },
+  },
+  {
     method: 'POST',
     path: '/open-ai-request',
     handler: 'openAi.openAiRequest',
+    config: {
+      policies: [
+        'admin::isAuthenticatedAdmin',
+        { name: 'admin::hasPermissions', config: { actions: ['plugin::ai-powered.create'] } },
+      ],
+    },
+  },
+  {
+    method: 'POST',
+    path: '/create-note',
+    handler: 'openAi.createNote',
     config: {
       policies: [
         'admin::isAuthenticatedAdmin',
