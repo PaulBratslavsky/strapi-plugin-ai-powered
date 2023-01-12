@@ -29,7 +29,7 @@ const SettingsForm = () => {
 
   const updateData = async () => {
     if (isLoading === false) setIsLoading(true);
-    await api.testRequest({ apiKey: apiKey });
+    await api.updateSettings({ apiKey: apiKey });
     setIsLoading(false);
   };
 

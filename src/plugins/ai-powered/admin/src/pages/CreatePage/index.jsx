@@ -1,4 +1,8 @@
-import React from "react";
+import React, { useState } from "react";
+import { useIntl } from "react-intl";
+
+import api from "../../api/open-ai";
+import getTrad from "../../utils/getTrad";
 
 import {
   Box,
@@ -10,7 +14,13 @@ import {
   GridItem,
 } from "@strapi/design-system";
 
-export default function CreatePage(action = () => null) {
+import { useNotification } from "@strapi/helper-plugin";
+
+export default function CreatePage() {
+  const toggleNotification = useNotification();
+  const { formatMessage } = useIntl();
+
+  const [isLoading, setIsLoading] = useState(false);
   const [formData, setFormData] = React.useState({
     title: "",
     content: "",
@@ -23,7 +33,22 @@ export default function CreatePage(action = () => null) {
 
   async function onSubmit(e) {
     e.preventDefault();
-    action(formData);
+    setIsLoading(true);
+    try {
+      return await api.openAiRequest(formData);
+      // TODO: Question aout error handling front and back
+    } catch (err) {
+      toggleNotification({
+        type: "warning",
+        message: formatMessage({
+          // TODO: Question aout the trad
+          id: getTrad("Settings.ai-powered.plugin.notification.api.error"),
+          defaultMessage: "Please check that you providede the correct API key",
+        }),
+      });
+    }
+
+    setIsLoading(false);
   }
 
   return (
