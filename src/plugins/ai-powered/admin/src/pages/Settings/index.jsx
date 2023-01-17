@@ -27,7 +27,7 @@ const ProtectedSettingsPage = () => {
 
 const SettingsForm = () => {
   const [apiKey, setApiKey] = useState("");
-  const [option, setOption] = useState("text-davinci-300");
+  const [option, setOption] = useState("text-davinci-003");
 
   const [isLoading, setIsLoading] = useState(false);
 
@@ -77,8 +77,8 @@ const SettingsForm = () => {
             </GridItem>
             <GridItem key="apiKey" col={12}>
               <Combobox label="Model" value={option} onChange={setOption}>
-                <ComboboxOption value="text-davinci-300">
-                  text-davinci-300
+                <ComboboxOption value="text-davinci-003">
+                  text-davinci-003
                 </ComboboxOption>
                 <ComboboxOption value="text-curie-001">
                   text-curie-001

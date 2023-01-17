@@ -11,12 +11,7 @@ async function fetchData(apiKey, configuration = {}) {
           'Content-Type': 'application/json',
           'Authorization': 'Bearer ' + apiKey,
         },
-        data: {
-          "model": "text-davinci-003",
-          "prompt": "This is a test",
-          "max_tokens": 64,
-          "temperature": 0.9
-        }
+        data: { ...configuration }
       }
     )
     return await response.data;
@@ -40,23 +35,20 @@ module.exports = ({ strapi }) => ({
       .service('openAi')
       .getSettings();
 
-    console.log(apiSettings);
-    // const configuration = {
-    //   model: "text-davinci-003",
-    //   prompt: "This is a test",
-    //   max_tokens: Number(1000),
-    //   temperature: 0.9,
-    //   top_p: 1,
-    //   frequency_penalty: 0.52,
-    //   presence_penalty: 0.9,
-    //   n: 1,
-    //   best_of: 2,
-    //   stream: false,
-    //   logprobs: null,
+    // function promptGenerator(payload) {
+    //   let prompt = "";
+    //   if (payload.content) return payload.promt +":"+ payload.content;
+    //   return prompt;
     // }
 
+    const configuration = {
+      model: apiSettings.model,
+      prompt: payload.prompt,
+      max_tokens: 265,
+      temperature: 0.9
+    }
     // handle error with catch
-    return await fetchData(apiSettings.apiKey, {});
+    return await fetchData(apiSettings.apiKey, configuration);
 
   },
 
@@ -76,7 +68,7 @@ module.exports = ({ strapi }) => ({
   async createNote(payload) {
     return await strapi.entityService.create("plugin::ai-powered.note", payload);
   },
-  
+
   async getNotes() {
     return await strapi.entityService.findMany("plugin::ai-powered.note");
   }

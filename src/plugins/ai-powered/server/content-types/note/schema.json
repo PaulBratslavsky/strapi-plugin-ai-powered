@@ -10,12 +10,28 @@
     "draftAndPublish": false,
     "comment": ""
   },
+
+  "pluginOptions": {
+    "content-manager": {
+      "visible": false
+    },
+
+    "content-type-builder": {
+      "visible": false
+    }
+  },
+
   "attributes": {
     "title": {
       "type": "string"
     },
     "content": {
       "type": "richtext"
+    },
+    "user": {
+      "type": "relation",
+      "relation": "oneToOne",
+      "target": "admin::user"
     }
   }
 }
