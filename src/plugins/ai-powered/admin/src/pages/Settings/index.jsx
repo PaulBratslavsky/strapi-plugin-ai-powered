@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import api from "../../api/open-ai";
 import { CheckPagePermissions } from "@strapi/helper-plugin";
 import {
@@ -10,6 +10,8 @@ import {
   Stack,
   Grid,
   GridItem,
+  Combobox,
+  ComboboxOption,
 } from "@strapi/design-system";
 
 import pluginPermissions from "./../../permissions";
@@ -25,11 +27,19 @@ const ProtectedSettingsPage = () => {
 
 const SettingsForm = () => {
   const [apiKey, setApiKey] = useState("");
+  const [option, setOption] = useState("text-davinci-300");
+
   const [isLoading, setIsLoading] = useState(false);
+
+  useEffect(async () => {
+    const { data } = await api.getSettings();
+    setApiKey(data.apiKey);
+    setOption(data.model);
+  }, []);
 
   const updateData = async () => {
     if (isLoading === false) setIsLoading(true);
-    await api.testRequest({ apiKey: apiKey });
+    await api.updateSettings({ data: { apiKey: apiKey, model: option } });
     setIsLoading(false);
   };
 
@@ -38,6 +48,8 @@ const SettingsForm = () => {
     setIsLoading(true);
     await updateData();
   }
+
+  console.log("apiKey", apiKey, "option", option);
 
   return (
     <Box
@@ -63,9 +75,25 @@ const SettingsForm = () => {
                 value={apiKey}
               />
             </GridItem>
+            <GridItem key="apiKey" col={12}>
+              <Combobox label="Model" value={option} onChange={setOption}>
+                <ComboboxOption value="text-davinci-300">
+                  text-davinci-300
+                </ComboboxOption>
+                <ComboboxOption value="text-curie-001">
+                  text-curie-001
+                </ComboboxOption>
+                <ComboboxOption value="text-babbage-001">
+                  text-babbage-001
+                </ComboboxOption>
+                <ComboboxOption value="text-ada-001">
+                  text-ada-001
+                </ComboboxOption>
+              </Combobox>
+            </GridItem>
             <GridItem key="submit" col={12}>
               <Button type="submit" disabled={isLoading}>
-                {isLoading ? "Saving Your Key" : "Save Your Key"}
+                {isLoading ? "Saving Settings" : "SaveSettings"}
               </Button>
             </GridItem>
           </Grid>

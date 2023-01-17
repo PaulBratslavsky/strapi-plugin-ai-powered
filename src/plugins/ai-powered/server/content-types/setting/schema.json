@@ -24,6 +24,9 @@
   "attributes": {
     "apiKey": {
       "type": "string"
+    },
+    "model": {
+      "type": "string"
     }
   }
 }

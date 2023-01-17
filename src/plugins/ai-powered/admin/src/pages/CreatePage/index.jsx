@@ -1,4 +1,7 @@
-import React from "react";
+import React, { useState } from "react";
+import { useIntl } from "react-intl";
+
+import api from "../../api/open-ai";
 
 import {
   Box,
@@ -10,7 +13,12 @@ import {
   GridItem,
 } from "@strapi/design-system";
 
-export default function CreatePage(action = () => null) {
+import { useNotification } from "@strapi/helper-plugin";
+
+export default function CreatePage() {
+  const toggleNotification = useNotification();
+
+  const [isLoading, setIsLoading] = useState(false);
   const [formData, setFormData] = React.useState({
     title: "",
     content: "",
@@ -23,7 +31,18 @@ export default function CreatePage(action = () => null) {
 
   async function onSubmit(e) {
     e.preventDefault();
-    action(formData);
+    setIsLoading(true);
+    try {
+      const res = await api.openAiRequest(formData);
+      return res;
+    } catch (error) {
+      toggleNotification({
+        type: "warning",
+        message: error.response.data.error.message,
+      });
+    }
+
+    setIsLoading(false);
   }
 
   return (
@@ -72,3 +91,6 @@ export default function CreatePage(action = () => null) {
     </Box>
   );
 }
+
+// Code reference for error handling notification
+// https://github.com/strapi/strapi/blob/f514da73e4c4f3ebe648c61bd3b376fcf09820fa/packages/core/admin/admin/src/content-manager/pages/App/useModels.js#L68-L76

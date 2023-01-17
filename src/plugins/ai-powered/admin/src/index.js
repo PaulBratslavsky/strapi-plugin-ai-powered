@@ -7,7 +7,6 @@ import PluginIcon from './components/PluginIcon';
 import pluginPermissions from './permissions';
 import getTrad from './utils/getTrad';
 
-
 const name = pluginPkg.strapi.name;
 
 export default {
@@ -35,7 +34,7 @@ export default {
     app.createSettingSection(
       {
         id: pluginId,
-        intlLabel: { id: getTrad('SettingsNav.section-label'), defaultMessage: 'Open AI' },
+        intlLabel: { id: getTrad('SettingsNav.section-label'), defaultMessage: 'AI Powered' },
       },
       [
         {
@@ -53,7 +52,7 @@ export default {
 
             return component;
           },
-          permissions: pluginPermissions.settingsUpdate,
+          permissions: pluginPermissions.permissions,
         },
       ]
     );
