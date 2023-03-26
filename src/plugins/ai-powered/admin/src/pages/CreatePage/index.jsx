@@ -1,4 +1,6 @@
 import React, { useState } from "react";
+import styled from "styled-components";
+
 import { useIntl } from "react-intl";
 
 import api from "../../api/open-ai";
@@ -15,6 +17,11 @@ import {
 
 import { useNotification } from "@strapi/helper-plugin";
 
+// NOTE: HATE THAT I HAVE TO DO THIS
+const StyledTextArea = styled(Textarea)`
+    min-height: 750px !important;
+`;
+
 export default function CreatePage() {
   const toggleNotification = useNotification();
 
@@ -30,19 +37,22 @@ export default function CreatePage() {
   }
 
   async function onSubmit(e) {
+    setIsLoading(true);
     e.preventDefault();
     setIsLoading(true);
     try {
       const res = await api.openAiRequest(formData);
+      console.log(res.data.choices[0].text);
+      setFormData({ ...formData, content: res.data.choices[0].text.trim() });
       return res;
     } catch (error) {
       toggleNotification({
         type: "warning",
         message: error.response.data.error.message,
       });
+    } finally {
+      setIsLoading(false);
     }
-
-    setIsLoading(false);
   }
 
   return (
@@ -72,17 +82,20 @@ export default function CreatePage() {
                 />
               </GridItem>
               <GridItem key="content" col={12}>
-                <Textarea
+                <StyledTextArea
                   placeholder="Insert your content to summarize"
                   label="Content"
                   name="content"
                   onChange={(e) => onFieldChange(e)}
+                  rows={100}
                 >
                   {formData.content}
-                </Textarea>
+                </StyledTextArea>
               </GridItem>
               <GridItem key="submit" col={12}>
-                <Button type="submit">Summarize</Button>
+                <Button type="submit">
+                  {isLoading ? "Loading" : "Summarize"}
+                </Button>
               </GridItem>
             </Grid>
           </Stack>

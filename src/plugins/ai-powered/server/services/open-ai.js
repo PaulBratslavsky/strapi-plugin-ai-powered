@@ -1,63 +1,49 @@
-const axios = require("axios");
 const { ApplicationError } = require('@strapi/utils').errors;
+const { Configuration, OpenAIApi } = require("openai");
 
-async function fetchData(apiKey, configuration = {}) {
-  try {
-    const response = await axios(
-      {
-        url: 'https://api.openai.com/v1/completions',
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': 'Bearer ' + apiKey,
-        },
-        data: {
-          "model": "text-davinci-003",
-          "prompt": "This is a test",
-          "max_tokens": 64,
-          "temperature": 0.9
-        }
-      }
-    )
-    return await response.data;
-  } catch (err) {
-    console.log(err.response.data.error, "err")
-    if (err.response.data.error.code === "invalid_api_key") {
-      throw new ApplicationError("Please provide a valid API key.");
-    } else if (err.response.data.error.code === null) {
-      throw new ApplicationError(err.response.data.error.message);
-    } else {
-      throw new ApplicationError(err, "Internal server error.");
-    }
-  }
-
+function configureOpenAi(apiKey) {
+  const configuration = new Configuration({
+    apiKey: apiKey,
+  });
+  return new OpenAIApi(configuration);
 }
 
 module.exports = ({ strapi }) => ({
-  async openAiRequest(payload) {
+  async openAiRequest(payload, type = "completion") {
+
+    console.log(payload, "payload");
     const apiSettings = await strapi
       .plugin('ai-powered')
       .service('openAi')
       .getSettings();
 
-    console.log(apiSettings);
-    // const configuration = {
-    //   model: "text-davinci-003",
-    //   prompt: "This is a test",
-    //   max_tokens: Number(1000),
-    //   temperature: 0.9,
-    //   top_p: 1,
-    //   frequency_penalty: 0.52,
-    //   presence_penalty: 0.9,
-    //   n: 1,
-    //   best_of: 2,
-    //   stream: false,
-    //   logprobs: null,
-    // }
+    const openai = configureOpenAi(apiSettings.apiKey);
+    const defaultPrompt = "summarize the following text into a blog post with sections and return in markdown:";
 
-    // handle error with catch
-    return await fetchData(apiSettings.apiKey, {});
+    async function createCompletion(payload) {
+      const response = await openai.createCompletion({
+        model: "text-davinci-003",
+        prompt: payload.prompt || defaultPrompt + payload.content,
+        temperature: 0.7,
+        max_tokens: 1383,
+      });
+      console.log(response.data, "response.data")
+      return response.data;
+    }
 
+    async function createTranscription(payload) {
+      const response = openai.createTranscription(payload.audioFile, "whisper-1");
+      return response.data;
+    }
+
+    switch (type) {
+      case "completion":
+        return await createCompletion(payload);
+      case "transcription":
+        return await createTranscription();
+      default:
+        throw new ApplicationError("Invalid type: Please provide a valid type");
+    }
   },
 
   async updateSettings(payload) {
@@ -76,7 +62,7 @@ module.exports = ({ strapi }) => ({
   async createNote(payload) {
     return await strapi.entityService.create("plugin::ai-powered.note", payload);
   },
-  
+
   async getNotes() {
     return await strapi.entityService.findMany("plugin::ai-powered.note");
   }
