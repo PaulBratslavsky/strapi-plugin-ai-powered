@@ -10,6 +10,9 @@ const api = {
   openAiRequest: async (data) => {
     return await axios.post("/ai-powered/open-ai-request", data);
   },
+  createVideoSummary: async (data) => {
+    return await axios.post("/ai-powered/create-video-summary", data);
+  }
 };
 
 export default api;

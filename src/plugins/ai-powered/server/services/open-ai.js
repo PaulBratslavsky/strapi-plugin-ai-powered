@@ -1,3 +1,4 @@
+const fs = require('fs');
 const { ApplicationError } = require('@strapi/utils').errors;
 const { Configuration, OpenAIApi } = require("openai");
 
@@ -10,8 +11,6 @@ function configureOpenAi(apiKey) {
 
 module.exports = ({ strapi }) => ({
   async openAiRequest(payload, type = "completion") {
-
-    console.log(payload, "payload");
     const apiSettings = await strapi
       .plugin('ai-powered')
       .service('openAi')
@@ -32,15 +31,20 @@ module.exports = ({ strapi }) => ({
     }
 
     async function createTranscription(payload) {
-      const response = openai.createTranscription(payload.audioFile, "whisper-1");
-      return response.data;
+      const audioFile = fs.createReadStream(payload.audioFilePath);
+      try {
+        const response = await openai.createTranscription(audioFile, "whisper-1");
+        return response.data;
+      } catch (error) {
+        throw new ApplicationError("Invalid audio file: Please provide a valid audio file");
+      }
     }
 
     switch (type) {
       case "completion":
         return await createCompletion(payload);
       case "transcription":
-        return await createTranscription();
+        return await createTranscription(payload);
       default:
         throw new ApplicationError("Invalid type: Please provide a valid type");
     }
@@ -65,5 +69,9 @@ module.exports = ({ strapi }) => ({
 
   async getNotes() {
     return await strapi.entityService.findMany("plugin::ai-powered.note");
+  },
+
+  async createVideoSummary(payload) {
+
   }
 });

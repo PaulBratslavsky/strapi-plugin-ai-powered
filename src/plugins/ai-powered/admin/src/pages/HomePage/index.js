@@ -19,7 +19,7 @@ const HomePage = () => {
     <div>
       <Box padding={8} background="neutral100">
         <EmptyStateLayout icon={<Illo />} content="Let's summarize some content with AI..." action={<Button
-          onClick={() => history.push(`/plugins/${pluginId}/create`)}
+          onClick={() => history.push(`/plugins/${pluginId}/video-summary`)}
           variant="secondary" startIcon={<Plus />}>
           Create new summary
         </Button>} />

@@ -10,7 +10,10 @@
   },
   "dependencies": {
     "@octokit/request": "^6.2.2",
-    "openai": "^3.2.1"
+    "ffmpeg-static": "^5.1.0",
+    "fluent-ffmpeg": "^2.1.2",
+    "openai": "^3.2.1",
+    "ytdl-core": "^4.11.2"
   },
   "author": {
     "name": "A Strapi developer"

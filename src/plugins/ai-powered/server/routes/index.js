@@ -42,5 +42,16 @@ module.exports = [
         { name: 'admin::hasPermissions', config: { actions: ['plugin::ai-powered.create'] } },
       ],
     },
-  }
+  },
+  {
+    method: 'POST',
+    path: '/create-video-summary',
+    handler: 'openAi.createVideoSummary',
+    config: {
+      policies: [
+        'admin::isAuthenticatedAdmin',
+        { name: 'admin::hasPermissions', config: { actions: ['plugin::ai-powered.create'] } },
+      ],
+    },
+  },
 ];
