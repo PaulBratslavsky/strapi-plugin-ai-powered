@@ -88,4 +88,54 @@ module.exports = ({ strapi }) => ({
     }
   },
 
+  async createVideoTranscription(ctx) {
+    console.log(ctx.request.body.url, "from createVideoSummary");
+
+    const videoUrl = ctx.request.body.url;
+    const videoFileName = "temp-video.mp4";
+
+    try {
+      const videoFilePath = await strapi
+        .plugin('ai-powered')
+        .service('utils')
+        .downloadVideoFile(videoUrl, videoFileName);
+
+      const audioFilePath = await strapi
+        .plugin('ai-powered')
+        .service('utils')
+        .convertVideoToAudio(videoFilePath);
+
+      const transcription = await strapi
+        .plugin('ai-powered')
+        .service('openAi')
+        .openAiRequest({ audioFilePath }, "transcription");
+
+      return { data: transcription };
+
+    } catch (error) {
+      ctx.throw(500, error);
+    }
+  },
+
+  async getTranscriptionSummary(ctx) {
+    console.log(ctx.request.body, "from create Summary");
+    const content = ctx.request.body.transcription;
+
+    try {
+      const summary = await strapi
+        .plugin('ai-powered')
+        .service('openAi')
+        .openAiRequest({ content }, "completion");
+
+      return { data: summary };
+    } catch (error) {
+      ctx.throw(500, error);
+    }
+  },
+
+  async test(ctx) {
+    console.log(ctx.request.body, "from test");
+    return { data: "test" };
+  },
+
 });

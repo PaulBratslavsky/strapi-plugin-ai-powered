@@ -23,24 +23,45 @@ export default function CreatePage() {
   const toggleNotification = useNotification();
 
   const [isLoading, setIsLoading] = useState(false);
-  const [summary, setSummary] = useState("");
   const [formData, setFormData] = React.useState({
     url: "",
+    transcription: "",
+    content: "",
   });
 
   function onFieldChange(e) {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   }
 
-  async function onSubmit(e) {
+  async function onTranscriptSubmit(e) {
     setIsLoading(true);
     e.preventDefault();
     setIsLoading(true);
     try {
-      const res = await api.createVideoSummary(formData);
+      const res = await api.createVideoTranscription(formData);
       console.log(res, "#########################################");
-      const summary = res.data.data.choices[0].text.trim();
-      setSummary(summary);
+      const data = res.data.data.text.trim();
+      setFormData({ ...formData, transcription: data });
+    } catch (error) {
+      toggleNotification({
+        type: "warning",
+        message: error.response.data.error.message,
+      });
+    } finally {
+      setIsLoading(false);
+    }
+  }
+
+  async function onContentSubmit(e) {
+    setIsLoading(true);
+    e.preventDefault();
+    setIsLoading(true);
+    try {
+      console.log(formData, "#########################################");
+      const res = await api.createTranscriptionSummary(formData);
+      console.log(res, "#########################################");
+      const data = res.data.data.choices[0].text.trim();
+      setFormData({ ...formData, summary: data });
     } catch (error) {
       toggleNotification({
         type: "warning",
@@ -62,7 +83,7 @@ export default function CreatePage() {
         paddingLeft={7}
         paddingRight={7}
       >
-        <form onSubmit={onSubmit}>
+        <form onSubmit={onTranscriptSubmit}>
           <Stack spacing={4}>
             <Grid gap={5}>
               <GridItem key="title" col={12}>
@@ -80,23 +101,46 @@ export default function CreatePage() {
 
               <GridItem key="submit" col={12}>
                 <Button type="submit">
-                  {isLoading ? "Loading" : "Summarize"}
+                  {isLoading ? "Loading" : "Transcribe"}
                 </Button>
               </GridItem>
             </Grid>
           </Stack>
         </form>
-        {summary && (
-          <GridItem key="summary" col={12}>
-            <StyledTextArea
-              label="Summary"
-              name="summary"
-              rows={100}
-              onChange={(e) => setSummary(e.target.value)}
-            >
-              {summary}
-            </StyledTextArea>
-          </GridItem>
+        {formData.transcription && (
+          <form onSubmit={onContentSubmit}>
+            <Grid>
+              <GridItem key="transcription" col={12}>
+                <StyledTextArea
+                  label="Transcription"
+                  name="transcription"
+                  rows={100}
+                  onChange={(e) => setFormData({ ...formData, transcription: e.target.value })}
+                >
+                  {formData.transcription}
+                </StyledTextArea>
+              </GridItem>
+              <GridItem key="submit" col={12}>
+                <Button type="submit">
+                  {isLoading ? "Loading" : "Summarize"}
+                </Button>
+              </GridItem>
+            </Grid>
+          </form>
+        )}
+         {formData.summary && (
+            <Grid>
+              <GridItem key="summary" col={12}>
+                <StyledTextArea
+                  label="Summary"
+                  name="summary"
+                  rows={100}
+                  onChange={(e) => setFormData({ ...formData, summary: e.target.value })}
+                >
+                  {formData.summary}
+                </StyledTextArea>
+              </GridItem>
+            </Grid>
         )}
       </Box>
     </Box>

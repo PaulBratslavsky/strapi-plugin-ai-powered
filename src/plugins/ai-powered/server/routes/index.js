@@ -54,4 +54,35 @@ module.exports = [
       ],
     },
   },
+
+  {
+    method: 'POST',
+    path: '/create-transcription-summary',
+    handler: 'openAi.getTranscriptionSummary',
+    config: {
+      policies: [
+        'admin::isAuthenticatedAdmin',
+        { name: 'admin::hasPermissions', config: { actions: ['plugin::ai-powered.create'] } },
+      ],
+    },
+  },
+
+  {
+    method: 'POST',
+    path: '/create-video-transcription',
+    handler: 'openAi.createVideoTranscription',
+    config: {
+      policies: [
+        'admin::isAuthenticatedAdmin',
+        { name: 'admin::hasPermissions', config: { actions: ['plugin::ai-powered.create'] } },
+      ],
+    },
+  },
+
+
 ];
+
+
+
+
+

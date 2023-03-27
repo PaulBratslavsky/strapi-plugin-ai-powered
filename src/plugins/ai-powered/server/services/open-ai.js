@@ -24,7 +24,7 @@ module.exports = ({ strapi }) => ({
         model: "text-davinci-003",
         prompt: payload.prompt || defaultPrompt + payload.content,
         temperature: 0.7,
-        max_tokens: 1383,
+        max_tokens: 2500,
       });
       console.log(response.data, "response.data")
       return response.data;
@@ -34,6 +34,7 @@ module.exports = ({ strapi }) => ({
       const audioFile = fs.createReadStream(payload.audioFilePath);
       try {
         const response = await openai.createTranscription(audioFile, "whisper-1");
+        console.log(response.data, "response.data")
         return response.data;
       } catch (error) {
         throw new ApplicationError("Invalid audio file: Please provide a valid audio file");
