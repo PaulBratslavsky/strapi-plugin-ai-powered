@@ -64,6 +64,8 @@ module.exports = ({ strapi }) => ({
         .service('utils')
         .downloadVideoFile(videoUrl, videoFileName);
 
+        console.log(videoFilePath, "############ videoFilePath #############");
+
       const audioFilePath = await strapi
         .plugin('ai-powered')
         .service('utils')

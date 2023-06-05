@@ -1,0 +1,18 @@
+{
+  "kind": "collectionType",
+  "collectionName": "cats",
+  "info": {
+    "singularName": "cat",
+    "pluralName": "cats",
+    "displayName": "cat"
+  },
+  "options": {
+    "draftAndPublish": false,
+    "comment": ""
+  },
+  "attributes": {
+    "name": {
+      "type": "string"
+    }
+  }
+}
