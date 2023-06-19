@@ -1,5 +1,7 @@
 import axios from '../utils/axiosInstance';
 
+// TODO: USE FETCH CLIENT NEED DOCS
+
 const api = {
   updateSettings: async (data) => {
     return await axios.put("/ai-powered/update-settings", data);
